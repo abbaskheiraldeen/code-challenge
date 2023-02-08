@@ -88,9 +88,9 @@ export default async function handler(req, res) {
       console.log(req.body)
       await db.collection("customers").updateOne(
         {
-          _id: ObjectId(id)
+          "_id": id
         },
-        { $set: { name: name , address: address, phoneNumber: +phoneNumber } }
+        { $set: { "name": name , "address": address, "phoneNumber": +phoneNumber } },
       );
 
       // return a message
