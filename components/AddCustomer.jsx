@@ -31,12 +31,21 @@ export default function AddCustomer() {
       const d = await response.json();
 
       console.log(d);
+      if(d.success){
+        return (
+          toast.success("Customer added successfully"),
+          setIsOpen(false),
+          router.push(router.asPath)
+        );
+      }else{
 
-      return (
-        setIsOpen(false),
-        toast.success("Customer added successfully"),
-        router.push(router.asPath)
-      );
+        return (
+         
+          toast.error("Could not add customer"),
+          setIsOpen(false)
+         
+        );
+      }
     } catch (error) {
       setIsOpen(false), console.log(error);
     }

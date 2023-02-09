@@ -32,11 +32,15 @@ export default function EditCustomer({ customer }) {
       });
 
       // reload the page and show toast
-       return (
-         setIsOpen(false),
-         toast.success("Customer Edited successfully"),
-         router.push(router.asPath)
-       );
+      if (d.success) {
+        return (
+          toast.success("Customer edited successfully"),
+          setIsOpen(false),
+          router.push(router.asPath)
+        );
+      } else {
+        return toast.error("Could not edit customer"), setIsOpen(false);
+      }
     } catch (error) {
       console.log(error);
     }
