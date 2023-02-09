@@ -146,7 +146,7 @@ export default function AddCustomer() {
                     </div>
                     <div className="relative form-group mb-6">
                       <input
-                        type="number"
+                        type="tel"
                         id="phoneNumber"
                         className="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50   border-solid border border-gray-300 appearance-none rounded focus:outline-none focus:ring-0 focus:border-[#FF9B0F] peer"
                         placeholder=" "
