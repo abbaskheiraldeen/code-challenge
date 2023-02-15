@@ -1,6 +1,8 @@
 import DeleteCustomer from "./DeleteCustomer";
 import EditCustomer from "./EditCustomer";
 
+import { FaRegEye } from "react-icons/fa";
+import Link from "next/link";
 
 
 export default function CustomersList({ customers }) {
@@ -44,6 +46,11 @@ export default function CustomersList({ customers }) {
                     <div className="flex justify-center align-middle">
                       <EditCustomer customer={customer} />
                       <DeleteCustomer customerId={customer._id} />
+                      <div>
+                        <Link href="/[cutomerId]" as={`/${customer._id}`}>
+                          <FaRegEye className="w-5 h-5" />
+                        </Link>
+                      </div>
                     </div>
                   </td>
                 </tr>

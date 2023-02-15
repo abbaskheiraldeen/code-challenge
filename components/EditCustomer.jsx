@@ -25,12 +25,14 @@ export default function EditCustomer({ customer }) {
 
     try {
       // Update customer
-      await fetch("/api/customers", {
+      const response =await fetch("/api/customers", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+  const d = await response.json();
 
+  console.log(d);
       // reload the page and show toast
       if (d.success) {
         return (

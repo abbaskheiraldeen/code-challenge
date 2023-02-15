@@ -1,5 +1,7 @@
+import { ObjectId } from "mongodb";
+
 const { connectToDatabase } = require("../lib/mongodb");
-const ObjectId = require("mongodb").ObjectId;
+// const ObjectId = require("mongodb");
 
 export async function addCustomer(req, res) {
   const { name, address, phoneNumber } = req.body;
@@ -58,10 +60,10 @@ export async function updateCustomer(req, res) {
       let { db } = await connectToDatabase();
 
       // update the customer
-      console.log(req.body);
-      const filter = { _id:  ObjectId(id) };
+      console.log("Logging body --", req.body);
+      const filter = { _id: new ObjectId(id) };
       const newValues = {
-        $set: { "name": name, "address": address, "phoneNumber": phoneNumber },
+        $set: { name: name, address: address, phoneNumber: phoneNumber },
       };
       await db.collection("customers").updateOne(filter, newValues);
 
