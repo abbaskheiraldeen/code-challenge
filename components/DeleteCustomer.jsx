@@ -2,6 +2,7 @@ import { FaTrash } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 
 import { useRouter } from "next/router";
+import { deleteCustomer } from "../lib/helper";
 
 
 export default function DeleteCustomer({ customerId }) {
@@ -12,10 +13,7 @@ export default function DeleteCustomer({ customerId }) {
     if (confirm("Are you sure you want to delete")){
       try {
         // Delete customer
-        await fetch("/api/customers", {
-          method: "DELETE",
-          body: customerId,
-        });
+        await deleteCustomer(customerId)
 
         
         return (

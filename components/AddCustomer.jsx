@@ -1,67 +1,55 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
+import {useReducer} from 'react'
+import { useQueryClient, useMutation } from "react-query";
 import toast, { Toaster } from "react-hot-toast";
 
-import { useRouter } from "next/router";
+import { addCustomer, getCustomers } from "../lib/helper";
+
+const formReducer= (state, event)=> {
+  return{
+    ...state,
+    [event.target.name]: event.target.value
+  }
+}
 
 export default function AddCustomer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    id: "",
-    name: "",
-    address: "",
-    phoneNumber: "",
+  const [formData, setFormData] = useReducer(formReducer,{})
+  
+
+  const queryClient = useQueryClient()
+  const addMutation = useMutation(addCustomer, {
+    onSuccess: () => {
+      queryClient.prefetchQuery('customers', getCustomers)
+      toast.success("Customer Added successfully");
+    },
   });
 
-  const router = useRouter();
+  
 
-  const { name, address, phoneNumber } = formData;
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (!name || !address || !phoneNumber) {
-        return alert("All fields are required");
-      }
-
-      const response = await fetch("/api/customers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const d = await response.json();
-
-      console.log(d);
-      if(d.success){
-        return (
-          toast.success("Customer added successfully"),
-          setIsOpen(false),
-          router.push(router.asPath)
-        );
-      }else{
-
-        return (
-         
-          toast.error("Could not add customer"),
-          setIsOpen(false)
-         
-        );
-      }
-    } catch (error) {
-      setIsOpen(false), console.log(error);
+    let{name, address, phoneNumber, status}= formData
+    const model = {
+      name,address,phoneNumber,status:"Available"
     }
+    addMutation.mutate(model);
+    setIsOpen(false)
+    
+     
   };
 
-  const onMutate = (e) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }));
-  };
+
+  if (addMutation.isLoading) return <div>Loading...</div>;
+  if (addMutation.isError) return toast.error(`${addMutation.error.message}`);
+  
+
   return (
-    <div className="flex justify-end items-end mr-12">
+    <div>
       <button
         onClick={() => setIsOpen(true)}
-        className="  px-4 py-2 text-sm bg-[#F2E5D0] border border-transparent rounded-md hover:bg-[#b1d8bf] duration-300"
+        className=" ml-6 px-4 py-2 text-sm bg-[#F2E5D0] border border-transparent rounded-md hover:bg-[#b1d8bf] duration-300"
       >
         Add a New Customer
       </button>
@@ -114,10 +102,11 @@ export default function AddCustomer() {
                       <input
                         type="text"
                         id="name"
+                        name="name"
                         className="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50   border-solid border border-gray-300 appearance-none rounded focus:outline-none focus:ring-0 focus:border-[#FF9B0F] peer"
                         placeholder=" "
                         autoComplete="off"
-                        onChange={onMutate}
+                        onChange={setFormData}
                         required
                       />
                       <label
@@ -130,11 +119,12 @@ export default function AddCustomer() {
                     <div className="relative form-group mb-6">
                       <input
                         type="text"
+                        name="address"
                         id="address"
                         className="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50   border-solid border border-gray-300 appearance-none rounded focus:outline-none focus:ring-0 focus:border-[#FF9B0F] peer"
                         placeholder=" "
                         autoComplete="off"
-                        onChange={onMutate}
+                        onChange={setFormData}
                         required
                       />
                       <label
@@ -147,11 +137,12 @@ export default function AddCustomer() {
                     <div className="relative form-group mb-6">
                       <input
                         type="tel"
+                        name="phoneNumber"
                         id="phoneNumber"
                         className="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50   border-solid border border-gray-300 appearance-none rounded focus:outline-none focus:ring-0 focus:border-[#FF9B0F] peer"
                         placeholder=" "
                         autoComplete="off"
-                        onChange={onMutate}
+                        onChange={setFormData}
                         required
                       />
                       <label

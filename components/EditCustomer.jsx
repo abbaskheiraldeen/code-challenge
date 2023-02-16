@@ -5,16 +5,18 @@ import { FaPen } from "react-icons/fa";
 
 
 import { useRouter } from "next/router";
+import { updateCustomer } from "../lib/helper";
 
 export default function EditCustomer({ customer }) {
 
+
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    id: customer._id,
+  const [formData, setFormData] = useState({ 
     name: customer.name,
     address: customer.address,
     phoneNumber: customer.phoneNumber,
+    status: customer.status,
   });
 
 
@@ -25,29 +27,21 @@ export default function EditCustomer({ customer }) {
 
     try {
       // Update customer
-      const response =await fetch("/api/customers", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-  const d = await response.json();
+   const response = await updateCustomer(customer._id, formData);
+   if(response){
+     return (
+       setIsOpen(false),
+      toast.success("Edit successfully"), 
+      router.push(router.asPath),
 
-  console.log(d);
-      // reload the page and show toast
-      if (d.success) {
-        return (
-          toast.success("Customer edited successfully"),
-          setIsOpen(false),
-          router.push(router.asPath)
-        );
-      } else {
-        return toast.error("Could not edit customer"), setIsOpen(false);
-      }
-    } catch (error) {
+      )
+   }
+   
+   
+    }catch(error){
       console.log(error);
     }
-  };
-
+  }
   const onMutate = (e) => {
     setFormData((prevState) => ({
       ...prevState,
