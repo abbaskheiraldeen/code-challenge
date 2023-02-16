@@ -32,7 +32,7 @@ export default function EditCustomer({ customer }) {
      return (
        setIsOpen(false),
       toast.success("Edit successfully"), 
-      router.push(router.asPath),
+      router.push(router.asPath)
 
       )
    }
